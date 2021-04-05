@@ -1,0 +1,147 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dnp-pod
+  namespace: sane-dnp
+  labels:
+    app: dnp
+spec:
+  selector:
+    matchLabels:
+      app: dnp
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  dnp
+    spec:
+      # initContainers:
+        # Init containers are exactly like regular containers, except:
+          # - Init containers always run to completion.
+          # - Each init container must complete successfully before the next one starts.
+      containers:
+      - name: nginx
+        image: nginx:1.15.7-alpine
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: 80
+        #   initialDelaySeconds: 5
+        #   timeoutSeconds: 5
+        #   successThreshold: 1
+        #   failureThreshold: 3
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /_status/healthz
+        #     port: 80
+        #   initialDelaySeconds: 5
+        #   timeoutSeconds: 2
+        #   successThreshold: 1
+        #   failureThreshold: 3
+        #   periodSeconds: 10
+        # env:
+        # - name: DB_HOST
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: MYAPP
+        #       key: DB_HOST
+        ports:
+        - containerPort:  80
+          name: nginx-port
+        volumeMounts:
+        - mountPath: /www  #容器挂载点
+          name: www
+        - mountPath: /etc/nginx/conf.d/
+          name: nginx-conf-d
+        - mountPath: /etc/nginx/fastcgi_params
+          name: nginx-fasrcgi-param
+        - mountPath: /etc/nginx/nginx.conf
+          name: nginx-conf
+        - mountPath: /etc/nginx/fastcgi-php.conf
+          name: nginx-fastcgi
+      - name: php
+        image: nginx:1.15.7-alpine
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 9000
+          name: php-port
+        volumeMounts:
+        - mountPath: /www
+          name: www
+        - mountPath: /usr/local/etc/php/php.ini
+          name: php-ini
+        - mountPath: /usr/local/etc/php-fpm.d/www.conf
+          name: php-fpm
+        - mountPath: /var/log/php
+          name: log
+      volumes:
+      - name: www
+        hostPath:
+          path: /data/www
+      - name: nginx-conf-d
+        hostPath:
+          path: /data/www/dnmp/services/nginx/conf.d/
+      - name: nginx-conf
+        hostPath:
+          path: /data/www/dnmp/services/nginx/nginx.conf
+      - name: nginx-fastcgi
+        hostPath:
+          path: /data/www/dnmp/services/nginx/fastcgi-php.conf
+      - name: nginx-fasrcgi-param
+        hostPath:
+          path: /data/www/dnmp/services/nginx/fastcgi_params
+      - name: php-ini
+        hostPath:
+          path: /data/www/k8s/services/php/php.ini
+      - name: php-fpm
+        hostPath:
+          path: /data/www/k8s/services/php/php-fpm.conf
+      - name: log
+        emptyDir: {}
+      restartPolicy: Always
+      nodeSelector: 
+        k8s: node01
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dnp-svc
+  namespace: sane-dnp
+spec:
+  selector:
+    app: dnp
+  # type: ClusterIP
+  type: LoadBalancer
+  externalIPs:
+  - 192.168.64.8
+  - 192.168.64.9
+  ports:
+  - name: nginx-port
+    port: 80
+    targetPort: 80
+    protocol: TCP
+    nodePort: 30002
+  - name: php-port
+    port: 9000
+    targetPort: 9000
+    protocol: TCP
+    nodePort: 30003

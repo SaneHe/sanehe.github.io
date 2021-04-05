@@ -166,41 +166,40 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-https-secure" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-cg-fastcgi-php-fpm" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/10/https-secure/">https-secure</a>
+      <a class="article-title" href="/2019/04/17/cg-fastcgi-php-fpm/">cg_fastcgi_php-fpm</a>
     </h1>
   
 
         
-        <a href="/2019/04/10/https-secure/" class="archive-article-date">
-  	<time datetime="2019-04-10T01:32:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-10</time>
+        <a href="/2019/04/17/cg-fastcgi-php-fpm/" class="archive-article-date">
+  	<time datetime="2019-04-17T08:34:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-17</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="HTTP-与-HTTPS-的区别"><a href="#HTTP-与-HTTPS-的区别" class="headerlink" title="HTTP 与 HTTPS 的区别"></a><code>HTTP</code> 与 <code>HTTPS</code> 的区别</h3><p><code>HTTP协议</code> 运行在 <code>TCP</code> 之上，明文传输，客户端与服务器端都无法验证对方的身份； <code>HTTPS</code>是身披 <code>SSL(Secure Socket Layer)</code> 外壳的 <code>HTTP</code>，运行于 <code>SSL</code> 上，<code>SSL</code> 运行于 <code>TCP</code>之上，是添加了加密和认证机制的 <code>HTTP</code>。二者之间存在如下不同：</p>
-<ul>
-<li>端口不同：<code>HTTPS</code> 与 <code>HTTP</code> 使用不同的连接方式，用的端口也不一样，前者是 <code>80</code>，后者是<code>443</code>；</li>
-<li>资源消耗：和 <code>HTTP</code> 通信相比，<code>HTTPS</code> 通信会由于加减密处理消耗更多的CPU和内存资源；</li>
-<li>开销：<code>HTTPS</code> 通信需要证书，而证书一般需要向认证机构购买；</li>
-<li><code>HTTPS</code> 的加密机制是一种共享密钥加密和公开密钥加密并用的混合加密机制。</li>
-</ul>
-<h3 id="对称加密与非对称加密"><a href="#对称加密与非对称加密" class="headerlink" title="对称加密与非对称加密"></a>对称加密与非对称加密</h3><ul>
-<li><code>对称密钥加密</code> 是指加密和解密使用 <code>同一个密钥</code> 的方式，这种方式存在的最大问题就是密钥<br>发送问题，即如何安全地将密钥发给对方；而非对称加密是指使用一对非对称密钥，即公钥和私<br>钥，公钥可以随意发布，但私钥只有自己知道。发送密文的一方使用对方的公钥进行加密处理，<br>对方接收到加密信息后，使用自己的私钥进行解密。<ul>
-<li>由于非对称加密的方式<code>不需要</code>发送用来解密的私钥，所以可以保证安全性；但是和对称加密比<br>起来，它非常的慢，所以我们还是要用对称加密来传送消息，但对称加密所使用的密钥我们可以通<br>过非对称加密的方式发送出去。</li>
-</ul>
-</li>
-</ul>
+        <h3 id="什么是CGI"><a href="#什么是CGI" class="headerlink" title="什么是CGI?"></a>什么是CGI?</h3><pre><code>CGI（Common Gateway Interface），公共网关接口，它是Web服务器与外部应用程序（CGI程序）之间传递信息的接口标准。
+通过CGI接口，Web服务器就能够获取客户端提交的信息，并转交给服务器端的CGI程序处理，最后返回结果给客户端。
+也就是说，CGI实际上是一个接口标准。
+我们通常所说的CGI是指CGI程序，即实现了CGI接口标准的程序。
+只要某种语言具有标准输入、输出和环境变量，如perl、php、C等，就可以用来编写CGI程序。
+</code></pre><h3 id="CGI程序的工作方式："><a href="#CGI程序的工作方式：" class="headerlink" title="CGI程序的工作方式："></a>CGI程序的工作方式：</h3><pre><code>Web服务器一般只处理静态文件请求（如 jpg、htm、html），如果碰到一个动态脚本请求（如php），
+web服务器主进程，就fork出一个新的进程来启动CGI程序，也就是说将动态脚本请求交给CGI程序来处理。
+启动CGI程序需要一个过程，比如，读取配置文件，加载扩展等。
+CGI程序启动后，就会解析动态脚本，然后将结果返回给Web服务器，最后Web服务器再将结果返回给客户端，刚才fork的进程也会随之关闭。
+这样，每次用户请求动态脚本，Web服务器都要重新fork一个新进程，去启动CGI程序，由CGI程序来处理动态脚本，处理完后进程随之关闭。
+这种工作方式的效率是非常低下的。
+</code></pre>
         
-          <a class="article-more-a" href="/2019/04/10/https-secure/#more">more >></a>
+          <a class="article-more-a" href="/2019/04/17/cg-fastcgi-php-fpm/#more">more >></a>
         
       
 
@@ -214,11 +213,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">http</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">cgi</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">https</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">fastcgi</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">php-fpm</a>
         		</li>
       		
 		</ul>
@@ -228,7 +231,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/10/https-secure/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/17/cg-fastcgi-php-fpm/">展开全文 >></a>
         </p>
       
 
@@ -313,6 +316,98 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/04/10/ipaddress/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-https-secure" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/10/https-secure/">https-secure</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/10/https-secure/" class="archive-article-date">
+  	<time datetime="2019-04-10T01:32:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="HTTP-与-HTTPS-的区别"><a href="#HTTP-与-HTTPS-的区别" class="headerlink" title="HTTP 与 HTTPS 的区别"></a><code>HTTP</code> 与 <code>HTTPS</code> 的区别</h3><p><code>HTTP协议</code> 运行在 <code>TCP</code> 之上，明文传输，客户端与服务器端都无法验证对方的身份； <code>HTTPS</code>是身披 <code>SSL(Secure Socket Layer)</code> 外壳的 <code>HTTP</code>，运行于 <code>SSL</code> 上，<code>SSL</code> 运行于 <code>TCP</code>之上，是添加了加密和认证机制的 <code>HTTP</code>。二者之间存在如下不同：</p>
+<ul>
+<li>端口不同：<code>HTTPS</code> 与 <code>HTTP</code> 使用不同的连接方式，用的端口也不一样，前者是 <code>80</code>，后者是<code>443</code>；</li>
+<li>资源消耗：和 <code>HTTP</code> 通信相比，<code>HTTPS</code> 通信会由于加减密处理消耗更多的CPU和内存资源；</li>
+<li>开销：<code>HTTPS</code> 通信需要证书，而证书一般需要向认证机构购买；</li>
+<li><code>HTTPS</code> 的加密机制是一种共享密钥加密和公开密钥加密并用的混合加密机制。</li>
+</ul>
+<h3 id="对称加密与非对称加密"><a href="#对称加密与非对称加密" class="headerlink" title="对称加密与非对称加密"></a>对称加密与非对称加密</h3><ul>
+<li><code>对称密钥加密</code> 是指加密和解密使用 <code>同一个密钥</code> 的方式，这种方式存在的最大问题就是密钥<br>发送问题，即如何安全地将密钥发给对方；而非对称加密是指使用一对非对称密钥，即公钥和私<br>钥，公钥可以随意发布，但私钥只有自己知道。发送密文的一方使用对方的公钥进行加密处理，<br>对方接收到加密信息后，使用自己的私钥进行解密。<ul>
+<li>由于非对称加密的方式<code>不需要</code>发送用来解密的私钥，所以可以保证安全性；但是和对称加密比<br>起来，它非常的慢，所以我们还是要用对称加密来传送消息，但对称加密所使用的密钥我们可以通<br>过非对称加密的方式发送出去。</li>
+</ul>
+</li>
+</ul>
+        
+          <a class="article-more-a" href="/2019/04/10/https-secure/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">http</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">https</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/10/https-secure/">展开全文 >></a>
         </p>
       
 
@@ -694,99 +789,6 @@
 
 
   
-    <article id="post-mysql-lock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/17/mysql-lock/">mysql-lock</a>
-    </h1>
-  
-
-        
-        <a href="/2019/02/17/mysql-lock/" class="archive-article-date">
-  	<time datetime="2019-02-17T08:45:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Mysql共享锁、排他锁、悲观锁、乐观锁及其使用场景"><a href="#Mysql共享锁、排他锁、悲观锁、乐观锁及其使用场景" class="headerlink" title="Mysql共享锁、排他锁、悲观锁、乐观锁及其使用场景"></a>Mysql共享锁、排他锁、悲观锁、乐观锁及其使用场景</h3><ul>
-<li>表级锁 – 锁定整张表</li>
-<li>页级锁 – 锁定整页</li>
-<li>行级锁 – 锁定一行</li>
-<li>共享锁 – S锁 MyISAM 叫做读锁</li>
-<li>排他锁 – X锁 MyISAM 叫做写锁</li>
-<li>悲观锁 – 抽象性 实际不存在</li>
-<li>乐观锁 – 抽象性 实际不存在</li>
-</ul>
-<h3 id="InnoDB-与-MyISAM"><a href="#InnoDB-与-MyISAM" class="headerlink" title="InnoDB 与 MyISAM"></a>InnoDB 与 MyISAM</h3><ul>
-<li>MyISAM 操作数据都是使用表级锁，即锁定整张表，性能低，并发不高；</li>
-<li>InnoDB 支持事务，采用行级锁，即修改哪行数据，就可以只锁定哪行 (行级锁不是锁记录，而是锁定索引，先锁定非主键索引，再锁定主键索引)；</li>
-<li>InnoDB 行锁是通过给索引项加锁实现的，如果没有索引，InnoDB 会通过隐藏的聚簇索引来对记录加锁。<br>也就是说：如果不通过索引条件检索数据，那么InnoDB将对表中所有数据加锁，实际效果跟表锁一样。<br>因为没有了索引，找到某一条记录就得扫描全表，要扫描全表，就得锁定表。</li>
-</ul>
-        
-          <a class="article-more-a" href="/2019/02/17/mysql-lock/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">lock</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/02/17/mysql-lock/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -897,15 +899,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">kang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">win</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">cmd</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">kang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">ubantu</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -917,7 +923,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">ubantu</a>
+                <a href="javascript:void(0)" class="js-tag color1">sourcetree</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -937,27 +947,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">sourcetree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">VPN</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">drone ci cd</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">homestead</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">laravel</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -986,6 +980,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">homestead</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">laravel</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1021,19 +1023,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lock</a>
+                <a href="javascript:void(0)" class="js-tag color5">execution</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">execution</a>
+                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1049,11 +1047,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">lock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">network</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">facade</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">status-code</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1069,23 +1075,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">status-code</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">podman</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">ubuntu20.04</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">vscode</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">xdebug</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">canvas</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1097,7 +1095,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">canvas</a>
+                <a href="javascript:void(0)" class="js-tag color2">podman</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">ubuntu20.04</a>
               </li>
              
               <li class="article-tag-list-item">
